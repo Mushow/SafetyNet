@@ -12,7 +12,6 @@ import uk.mushow.safetynet.service.PersonService;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/person")
