@@ -2,8 +2,8 @@ package uk.mushow.safetynet.data;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -17,7 +17,7 @@ public class JsonDataLoader {
     private final DataWrapper jsonData;
 
     public JsonDataLoader(ObjectMapper mapper, @Value("${json-data}") String jsonFile) {
-        Logger log = LoggerFactory.getLogger(JsonDataLoader.class);
+        Logger log = LogManager.getLogger(JsonDataLoader.class);
         try {
             URL resourceUrl = getClass().getClassLoader().getResource(jsonFile);
             if (resourceUrl == null) {
