@@ -1,6 +1,5 @@
 package uk.mushow.safetynet.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.mushow.safetynet.model.Person;
 import uk.mushow.safetynet.repository.PersonRepository;
@@ -8,9 +7,11 @@ import uk.mushow.safetynet.repository.PersonRepository;
 @Service
 public class PersonService implements IPersonService {
 
+    private final PersonRepository personRepository;
 
-    @Autowired
-    private PersonRepository personRepository;
+    public PersonService(PersonRepository personRepository) {
+        this.personRepository = personRepository;
+    }
 
     @Override
     public Person addPerson(Person person) {
