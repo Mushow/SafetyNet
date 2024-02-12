@@ -26,7 +26,7 @@ public class PersonService implements IPersonService {
 
     @Override
     public void deletePerson(Person person) throws PersonNotFoundException {
-        personRepository.delete(person.getFirstName(), person.getLastName());
+        personRepository.delete(person);
     }
 
 }
