@@ -5,6 +5,10 @@ import uk.mushow.safetynet.exception.MedicalRecordNotFoundException;
 import uk.mushow.safetynet.model.MedicalRecord;
 import uk.mushow.safetynet.repository.MedicalRecordRepository;
 
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.format.DateTimeFormatter;
+
 @Service
 public class MedicalRecordService implements IMedicalRecordService {
 
@@ -28,4 +32,18 @@ public class MedicalRecordService implements IMedicalRecordService {
     public void deleteMedicalRecord(MedicalRecord medicalRecord) throws MedicalRecordNotFoundException {
         medicalRecordRepository.delete(medicalRecord);
     }
+
+    public MedicalRecord getByName(String firstName, String lastName) {
+        return medicalRecordRepository.read(firstName, lastName);
+    }
+
+    public int getAge(MedicalRecord medicalRecord) {
+        LocalDate birthDate = LocalDate.parse(medicalRecord.getBirthdate(), getDateFormat());
+        return Period.between(birthDate, LocalDate.now()).getYears();
+    }
+
+    public DateTimeFormatter getDateFormat() {
+        return DateTimeFormatter.ofPattern("MM/dd/yyyy");
+    }
+
 }
