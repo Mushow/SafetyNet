@@ -3,8 +3,12 @@ package uk.mushow.safetynet.repository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import uk.mushow.safetynet.data.DataWrapper;
+import uk.mushow.safetynet.dto.PersonCoveredDTO;
 import uk.mushow.safetynet.exception.StationNotFoundException;
 import uk.mushow.safetynet.model.Firestation;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Repository
 public class FirestationRepository {
@@ -35,11 +39,10 @@ public class FirestationRepository {
         }
     }
 
-
     public void delete(Firestation firestation) throws StationNotFoundException {
         boolean wasRemoved = dataWrapper.getFirestations().
                 removeIf(f -> f.getAddress().equals(firestation.getAddress()) &&
-                         f.getStation().equals(firestation.getStation()));
+                         f.getStation() == firestation.getStation());
 
         if (!wasRemoved) {
             throw new StationNotFoundException("The station at " + firestation.getAddress() +
@@ -47,5 +50,17 @@ public class FirestationRepository {
         }
     }
 
+    public List<String> findAddressesByStationNumber(int stationNumber) {
+        return dataWrapper.getFirestations().stream()
+                .filter(f -> f.getStation() == stationNumber)
+                .map(Firestation::getAddress)
+                .collect(Collectors.toList());
+    }
 
+    public List<PersonCoveredDTO> findPersonsByAddress(String address) {
+        return dataWrapper.getPersons().stream()
+                .filter(p -> p.getAddress().equals(address))
+                .map(p -> new PersonCoveredDTO(p.getFirstName(), p.getLastName(), p.getAddress(), p.getPhone()))
+                .collect(Collectors.toList());
+    }
 }
