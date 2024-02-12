@@ -115,4 +115,17 @@ public class PersonService implements IPersonService {
         return floodAlerts;
     }
 
+    public List<PersonInfoDTO> getPersonInfo(String firstName, String lastName) {
+        return personRepository.findPersonByPredicate(person -> person.getFirstName().equals(firstName) && person.getLastName().equals(lastName))
+                .stream()
+                .map(person -> {
+                    MedicalRecord medicalRecord = medicalRecordService.getByName(person.getFirstName(), person.getLastName());
+                    int age = getAge(medicalRecord);
+                    MedicalInfoDTO medicalInfoDTO = new MedicalInfoDTO(medicalRecord.getMedications(), medicalRecord.getAllergies());
+
+                    return new PersonInfoDTO(person.getLastName(), person.getAddress(), age, person.getEmail(), medicalInfoDTO);
+                })
+                .collect(Collectors.toList());
+    }
+
 }
