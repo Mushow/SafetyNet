@@ -1,5 +1,6 @@
 package uk.mushow.safetynet.repository;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import uk.mushow.safetynet.data.DataWrapper;
 import uk.mushow.safetynet.exception.MedicalRecordNotFoundException;
@@ -8,21 +9,23 @@ import uk.mushow.safetynet.model.MedicalRecord;
 @Repository
 public class MedicalRecordRepository {
 
-    private final DataWrapper dataWrapper;
+    @Autowired
+    private DataWrapper dataWrapper;
 
     public MedicalRecordRepository(DataWrapper dataWrapper) {
         this.dataWrapper = dataWrapper;
+        System.out.println(dataWrapper.hashCode());
     }
 
     public void create(MedicalRecord medicalRecord) {
-        dataWrapper.medicalRecords().add(medicalRecord);
+        dataWrapper.getMedicalRecords().add(medicalRecord);
     }
 
     public void update(MedicalRecord updatedMedicalRecord) throws MedicalRecordNotFoundException {
         String id = updatedMedicalRecord.getFirstName() + updatedMedicalRecord.getLastName();
         boolean found = false;
 
-        for (MedicalRecord currentMedicalRecord : dataWrapper.medicalRecords()) {
+        for (MedicalRecord currentMedicalRecord : dataWrapper.getMedicalRecords()) {
             String currentId = currentMedicalRecord.getFirstName() + currentMedicalRecord.getLastName();
             if (currentId.equals(id)) {
                 updateMedicalRecordInformation(currentMedicalRecord, updatedMedicalRecord);
@@ -37,7 +40,7 @@ public class MedicalRecordRepository {
     public void delete(MedicalRecord medicalRecordToDelete) throws MedicalRecordNotFoundException {
         String firstName = medicalRecordToDelete.getFirstName();
         String lastName = medicalRecordToDelete.getLastName();
-        boolean wasRemoved = dataWrapper.medicalRecords().removeIf(medicalRecord ->
+        boolean wasRemoved = dataWrapper.getMedicalRecords().removeIf(medicalRecord ->
                 medicalRecord.getFirstName().equals(firstName) && medicalRecord.getLastName().equals(lastName));
 
         if (!wasRemoved) {
