@@ -1,27 +1,29 @@
 package uk.mushow.safetynet.service;
 
 import org.springframework.stereotype.Service;
-import uk.mushow.safetynet.dto.ChildDTO;
-import uk.mushow.safetynet.dto.ChildFamilyDTO;
-import uk.mushow.safetynet.dto.MedicalInfoDTO;
-import uk.mushow.safetynet.dto.ResidentDTO;
+import uk.mushow.safetynet.dto.*;
 import uk.mushow.safetynet.exception.PersonNotFoundException;
 import uk.mushow.safetynet.model.MedicalRecord;
 import uk.mushow.safetynet.model.Person;
+import uk.mushow.safetynet.repository.FirestationRepository;
 import uk.mushow.safetynet.repository.PersonRepository;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
 public class PersonService implements IPersonService {
 
     private final PersonRepository personRepository;
+    private final FirestationRepository firestationRepository;
     private final MedicalRecordService medicalRecordService;
 
-    public PersonService(PersonRepository personRepository, MedicalRecordService medicalRecordService) {
+    public PersonService(PersonRepository personRepository, FirestationRepository firestationRepository, MedicalRecordService medicalRecordService) {
         this.personRepository = personRepository;
+        this.firestationRepository = firestationRepository;
         this.medicalRecordService = medicalRecordService;
     }
 
@@ -83,6 +85,34 @@ public class PersonService implements IPersonService {
                     return new ResidentDTO(person.getLastName(), person.getPhone(), age, medicalInfoDTO);
                 })
                 .collect(Collectors.toList());
+    }
+
+    public List<FloodDTO> getFloodAlertByStations(List<Integer> stations) {
+        List<FloodDTO> floodAlerts = new ArrayList<>();
+
+        for (Integer station : stations) {
+            List<String> stationAddresses = firestationRepository.findAddressesByStationNumber(station);
+            Map<String, List<ResidentDTO>> householdsByAddress = new HashMap<>();
+
+            for (String address : stationAddresses) {
+                List<Person> personsAtAddress = personRepository.findPersonByPredicate(person -> person.getAddress().equals(address));
+                List<ResidentDTO> residents = personsAtAddress.stream()
+                        .map(person -> {
+                            MedicalRecord medicalRecord = medicalRecordService.getByName(person.getFirstName(), person.getLastName());
+                            int age = getAge(medicalRecord);
+                            MedicalInfoDTO medicalInfoDTO = new MedicalInfoDTO(medicalRecord.getMedications(), medicalRecord.getAllergies());
+
+                            return new ResidentDTO(person.getLastName(), person.getPhone(), age, medicalInfoDTO);
+                        })
+                        .toList();
+
+                householdsByAddress.put(address, residents);
+            }
+
+            floodAlerts.add(new FloodDTO(householdsByAddress));
+        }
+
+        return floodAlerts;
     }
 
 }
