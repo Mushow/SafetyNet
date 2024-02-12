@@ -6,6 +6,8 @@ import uk.mushow.safetynet.data.DataWrapper;
 import uk.mushow.safetynet.exception.MedicalRecordNotFoundException;
 import uk.mushow.safetynet.model.MedicalRecord;
 
+import java.util.Optional;
+
 @Repository
 public class MedicalRecordRepository {
 
@@ -52,4 +54,13 @@ public class MedicalRecordRepository {
         current.setMedications(update.getMedications());
         current.setAllergies(update.getAllergies());
     }
+
+    public MedicalRecord read(String firstName, String lastName) {
+        Optional<MedicalRecord> matchingRecord = dataWrapper.getMedicalRecords().stream()
+                .filter(medicalRecord -> medicalRecord.getFirstName().equals(firstName) && medicalRecord.getLastName().equals(lastName))
+                .findFirst();
+
+        return matchingRecord.orElse(null);
+    }
+
 }
