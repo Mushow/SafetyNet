@@ -262,7 +262,7 @@
       "station": "2"
     }
   ],
-  "medicalrecords": [
+  "medicalRecords": [
     {
       "firstName": "John",
       "lastName": "Boyd",
