@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
-import uk.mushow.safetynet.exceptions.PersonNotFoundException;
+import uk.mushow.safetynet.exception.PersonNotFoundException;
 import uk.mushow.safetynet.model.Person;
 import uk.mushow.safetynet.service.PersonService;
 
