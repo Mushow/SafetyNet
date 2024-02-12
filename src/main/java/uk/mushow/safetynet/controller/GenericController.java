@@ -4,10 +4,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import uk.mushow.safetynet.dto.ChildDTO;
-import uk.mushow.safetynet.dto.FloodDTO;
-import uk.mushow.safetynet.dto.PhoneAlertDTO;
-import uk.mushow.safetynet.dto.ResidentDTO;
+import uk.mushow.safetynet.dto.*;
 import uk.mushow.safetynet.service.FirestationService;
 import uk.mushow.safetynet.service.PersonService;
 
@@ -43,6 +40,11 @@ public class GenericController {
     @GetMapping("flood/stations")
     public List<FloodDTO> getFloodAlertByStations(@RequestParam List<Integer> stations) {
         return personService.getFloodAlertByStations(stations);
+    }
+
+    @GetMapping("personInfo")
+    public List<PersonInfoDTO> getPersonInfo(@RequestParam("firstName") String firstName, @RequestParam("lastName") String lastName) {
+        return personService.getPersonInfo(firstName, lastName);
     }
 
 }
