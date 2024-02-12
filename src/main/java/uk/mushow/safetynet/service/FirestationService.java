@@ -44,7 +44,9 @@ public class FirestationService implements IFirestationService {
         for (String address : addresses) {
             List<PersonCoveredDTO> persons = firestationRepository.findPersonsByAddress(address);
             coveredPersons.addAll(persons);
-            numberOfAdults += (int) persons.stream().filter(person -> personService.isAdult(person.firstName(), person.lastName())).count();
+            numberOfAdults += (int) persons.stream()
+                    .filter(person -> personService.isAdult(person.firstName(), person.lastName()))
+                    .count();
         }
 
         int numberOfChildren = coveredPersons.size() - numberOfAdults;
