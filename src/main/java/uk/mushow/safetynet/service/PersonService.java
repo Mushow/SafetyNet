@@ -1,6 +1,7 @@
 package uk.mushow.safetynet.service;
 
 import org.springframework.stereotype.Service;
+import uk.mushow.safetynet.exception.PersonNotFoundException;
 import uk.mushow.safetynet.model.Person;
 import uk.mushow.safetynet.repository.PersonRepository;
 
@@ -19,12 +20,12 @@ public class PersonService implements IPersonService {
     }
 
     @Override
-    public void updatePerson(Person person) {
+    public void updatePerson(Person person) throws PersonNotFoundException {
         personRepository.update(person);
     }
 
     @Override
-    public void deletePerson(Person person) {
+    public void deletePerson(Person person) throws PersonNotFoundException {
         personRepository.delete(person.getFirstName(), person.getLastName());
     }
 
