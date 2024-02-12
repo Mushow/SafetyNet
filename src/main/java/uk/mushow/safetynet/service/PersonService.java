@@ -14,13 +14,13 @@ public class PersonService implements IPersonService {
     }
 
     @Override
-    public Person addPerson(Person person) {
-        return personRepository.create(person);
+    public void addPerson(Person person) {
+        personRepository.create(person);
     }
 
     @Override
-    public Person updatePerson(Person person) {
-        return personRepository.update(person);
+    public void updatePerson(Person person) {
+        personRepository.update(person);
     }
 
     @Override

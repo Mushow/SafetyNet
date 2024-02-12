@@ -14,18 +14,15 @@ public class PersonRepository {
         this.dataWrapper = dataWrapper;
     }
 
-    public Person create(Person person) {
+    public void create(Person person) {
         dataWrapper.persons().add(person);
-        return person;
     }
 
-    public Person update(Person updatedPerson) {
+    public void update(Person updatedPerson) {
         String id = updatedPerson.getFirstName() + updatedPerson.getLastName();
         for (Person currentPerson : dataWrapper.persons()) {
-            if ((currentPerson.getFirstName() + currentPerson.getLastName()).equals(id) ) {
-                updatePersonInformation(currentPerson, updatedPerson);
-                return currentPerson;
-            }
+            String currentId = currentPerson.getFirstName() + currentPerson.getLastName();
+            if (currentId.equals(id)) updatePersonInformation(currentPerson, updatedPerson);
         }
         throw new PersonNotFoundException("The person: " + updatedPerson.getFirstName() + " " + updatedPerson.getLastName() + "was not found!");
     }

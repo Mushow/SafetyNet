@@ -25,15 +25,15 @@ public class PersonController {
 
     @PostMapping
     public ResponseEntity<Person> addPerson(@Valid @RequestBody Person person) {
-        Person savedPerson = personService.addPerson(person);
-        return new ResponseEntity<>(savedPerson, HttpStatus.CREATED);
+        personService.addPerson(person);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PutMapping
     public ResponseEntity<Person> updatePerson(@Valid @RequestBody Person person) {
         try {
-            Person updatedPerson = personService.updatePerson(person);
-            return ResponseEntity.ok(updatedPerson);
+            personService.updatePerson(person);
+            return ResponseEntity.ok(person);
         } catch (PersonNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
