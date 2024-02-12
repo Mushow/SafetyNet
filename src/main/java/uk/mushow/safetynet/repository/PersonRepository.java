@@ -20,14 +20,23 @@ public class PersonRepository {
 
     public void update(Person updatedPerson) throws PersonNotFoundException {
         String id = updatedPerson.getFirstName() + updatedPerson.getLastName();
+        boolean found = false;
+
         for (Person currentPerson : dataWrapper.persons()) {
             String currentId = currentPerson.getFirstName() + currentPerson.getLastName();
-            if (currentId.equals(id)) updatePersonInformation(currentPerson, updatedPerson);
+            if (currentId.equals(id)) {
+                updatePersonInformation(currentPerson, updatedPerson);
+                found = true;
+                break;
+            }
         }
-        throw new PersonNotFoundException("The person: " + updatedPerson.getFirstName() + " " + updatedPerson.getLastName() + "was not found!");
+
+        if(!found) throw new PersonNotFoundException("The person: " + updatedPerson.getFirstName() + " " + updatedPerson.getLastName() + "was not found!");
     }
 
-    public void delete(String firstName, String lastName) throws PersonNotFoundException {
+    public void delete(Person personToDelete) throws PersonNotFoundException {
+        String firstName = personToDelete.getFirstName();
+        String lastName = personToDelete.getLastName();
         boolean wasRemoved = dataWrapper.persons().removeIf(person ->
                 person.getFirstName().equals(firstName) && person.getLastName().equals(lastName));
 
