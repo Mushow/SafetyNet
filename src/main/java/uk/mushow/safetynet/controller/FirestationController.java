@@ -3,7 +3,7 @@ package uk.mushow.safetynet.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import uk.mushow.safetynet.exceptions.PersonNotFoundException;
+import uk.mushow.safetynet.exception.StationNotFoundException;
 import uk.mushow.safetynet.model.Firestation;
 import uk.mushow.safetynet.service.FirestationService;
 
@@ -28,7 +28,7 @@ public class FirestationController {
         try {
             firestationService.updateFirestation(firestation);
             return ResponseEntity.ok(firestation);
-        } catch (PersonNotFoundException e) {
+        } catch (StationNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
     }
@@ -38,7 +38,7 @@ public class FirestationController {
         try {
             firestationService.deleteFirestation(firestation);
             return ResponseEntity.noContent().build();
-        } catch (PersonNotFoundException e ) {
+        } catch (StationNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
     }
