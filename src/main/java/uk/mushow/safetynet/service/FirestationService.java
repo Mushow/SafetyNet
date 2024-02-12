@@ -3,12 +3,14 @@ package uk.mushow.safetynet.service;
 import org.springframework.stereotype.Service;
 import uk.mushow.safetynet.dto.FirestationDTO;
 import uk.mushow.safetynet.dto.PersonCoveredDTO;
+import uk.mushow.safetynet.dto.PhoneAlertDTO;
 import uk.mushow.safetynet.exception.StationNotFoundException;
 import uk.mushow.safetynet.model.Firestation;
 import uk.mushow.safetynet.repository.FirestationRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class FirestationService implements IFirestationService {
@@ -52,6 +54,14 @@ public class FirestationService implements IFirestationService {
         int numberOfChildren = coveredPersons.size() - numberOfAdults;
 
         return new FirestationDTO(coveredPersons, numberOfAdults, numberOfChildren);
+    }
+
+    public PhoneAlertDTO getPhoneAlertByStationNumber(int stationNumber) {
+        return new PhoneAlertDTO(
+                firestationRepository.findAddressesByStationNumber(stationNumber).stream()
+                        .flatMap(address -> firestationRepository.findPhoneNumbersByAddress(address).stream())
+                        .collect(Collectors.toList())
+        );
     }
 
 }
