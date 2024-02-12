@@ -6,6 +6,10 @@ import uk.mushow.safetynet.data.DataWrapper;
 import uk.mushow.safetynet.exception.PersonNotFoundException;
 import uk.mushow.safetynet.model.Person;
 
+import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+
 @Repository
 public class PersonRepository {
 
@@ -50,4 +54,9 @@ public class PersonRepository {
         current.setPhone(update.getPhone());
     }
 
+    public List<Person> findPersonByPredicate(Predicate<Person> predicate) {
+        return dataWrapper.getPersons().stream()
+                .filter(predicate)
+                .collect(Collectors.toList());
+    }
 }
