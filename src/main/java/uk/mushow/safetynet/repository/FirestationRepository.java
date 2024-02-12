@@ -6,6 +6,7 @@ import uk.mushow.safetynet.data.DataWrapper;
 import uk.mushow.safetynet.dto.PersonCoveredDTO;
 import uk.mushow.safetynet.exception.StationNotFoundException;
 import uk.mushow.safetynet.model.Firestation;
+import uk.mushow.safetynet.model.Person;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -61,6 +62,13 @@ public class FirestationRepository {
         return dataWrapper.getPersons().stream()
                 .filter(p -> p.getAddress().equals(address))
                 .map(p -> new PersonCoveredDTO(p.getFirstName(), p.getLastName(), p.getAddress(), p.getPhone()))
+                .collect(Collectors.toList());
+    }
+
+    public List<String> findPhoneNumbersByAddress(String address) {
+        return dataWrapper.getPersons().stream()
+                .filter(p -> p.getAddress().equals(address))
+                .map(Person::getPhone)
                 .collect(Collectors.toList());
     }
 }
