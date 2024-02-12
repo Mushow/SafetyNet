@@ -2,7 +2,7 @@ package uk.mushow.safetynet.repository;
 
 import org.springframework.stereotype.Repository;
 import uk.mushow.safetynet.data.DataWrapper;
-import uk.mushow.safetynet.exceptions.PersonNotFoundException;
+import uk.mushow.safetynet.exception.PersonNotFoundException;
 import uk.mushow.safetynet.model.Person;
 
 @Repository
@@ -18,7 +18,7 @@ public class PersonRepository {
         dataWrapper.persons().add(person);
     }
 
-    public void update(Person updatedPerson) {
+    public void update(Person updatedPerson) throws PersonNotFoundException {
         String id = updatedPerson.getFirstName() + updatedPerson.getLastName();
         for (Person currentPerson : dataWrapper.persons()) {
             String currentId = currentPerson.getFirstName() + currentPerson.getLastName();
@@ -27,7 +27,7 @@ public class PersonRepository {
         throw new PersonNotFoundException("The person: " + updatedPerson.getFirstName() + " " + updatedPerson.getLastName() + "was not found!");
     }
 
-    public void delete(String firstName, String lastName) {
+    public void delete(String firstName, String lastName) throws PersonNotFoundException {
         boolean wasRemoved = dataWrapper.persons().removeIf(person ->
                 person.getFirstName().equals(firstName) && person.getLastName().equals(lastName));
 
