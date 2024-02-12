@@ -5,8 +5,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import uk.mushow.safetynet.dto.ChildDTO;
-import uk.mushow.safetynet.service.FirestationService;
 import uk.mushow.safetynet.service.PersonService;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/")
@@ -18,7 +19,7 @@ public class GenericController {
     }
 
     @GetMapping("/childAlert")
-    public ChildDTO getChildAlert(@RequestParam("address") String address) {
+    public List<ChildDTO> getChildAlert(@RequestParam("address") String address) {
         return personService.getChildAlertByAddress(address);
     }
 
