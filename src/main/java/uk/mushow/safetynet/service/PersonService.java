@@ -3,6 +3,8 @@ package uk.mushow.safetynet.service;
 import org.springframework.stereotype.Service;
 import uk.mushow.safetynet.dto.ChildDTO;
 import uk.mushow.safetynet.dto.ChildFamilyDTO;
+import uk.mushow.safetynet.dto.MedicalInfoDTO;
+import uk.mushow.safetynet.dto.ResidentDTO;
 import uk.mushow.safetynet.exception.PersonNotFoundException;
 import uk.mushow.safetynet.model.MedicalRecord;
 import uk.mushow.safetynet.model.Person;
@@ -67,6 +69,20 @@ public class PersonService implements IPersonService {
         }
 
         return childAlerts;
+    }
+
+
+    public List<ResidentDTO> getFireAlertByAddress(String address) {
+        return personRepository.findPersonByPredicate(person -> person.getAddress().equals(address))
+                .stream()
+                .map(person -> {
+                    MedicalRecord medicalRecord = medicalRecordService.getByName(person.getFirstName(), person.getLastName());
+                    int age = getAge(medicalRecord);
+                    MedicalInfoDTO medicalInfoDTO = new MedicalInfoDTO(medicalRecord.getMedications(), medicalRecord.getAllergies());
+
+                    return new ResidentDTO(person.getLastName(), person.getPhone(), age, medicalInfoDTO);
+                })
+                .collect(Collectors.toList());
     }
 
 }
