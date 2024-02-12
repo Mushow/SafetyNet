@@ -14,7 +14,6 @@ public class MedicalRecordRepository {
 
     public MedicalRecordRepository(DataWrapper dataWrapper) {
         this.dataWrapper = dataWrapper;
-        System.out.println(dataWrapper.hashCode());
     }
 
     public void create(MedicalRecord medicalRecord) {
