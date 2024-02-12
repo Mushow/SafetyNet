@@ -3,6 +3,7 @@ package uk.mushow.safetynet.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import uk.mushow.safetynet.dto.FirestationDTO;
 import uk.mushow.safetynet.exception.StationNotFoundException;
 import uk.mushow.safetynet.model.Firestation;
 import uk.mushow.safetynet.service.FirestationService;
@@ -15,6 +16,11 @@ public class FirestationController {
 
     public FirestationController(FirestationService firestationService) {
         this.firestationService = firestationService;
+    }
+
+    @GetMapping
+    public FirestationDTO getCoverage(@RequestParam("stationNumber") int stationNumber) {
+        return firestationService.getFirestationCoverage(stationNumber);
     }
 
     @PostMapping
