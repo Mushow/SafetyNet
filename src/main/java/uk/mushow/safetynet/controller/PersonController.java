@@ -44,7 +44,7 @@ public class PersonController {
         try {
             personService.deletePerson(person);
             return ResponseEntity.noContent().build();
-        } catch (PersonNotFoundException e ) {
+        } catch (PersonNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
     }
