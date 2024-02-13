@@ -1,10 +1,15 @@
 package uk.mushow.safetynet.controller;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import uk.mushow.safetynet.dto.*;
+import uk.mushow.safetynet.exception.AddressNotFoundException;
+import uk.mushow.safetynet.exception.CityNotFoundException;
+import uk.mushow.safetynet.exception.PersonNotFoundException;
+import uk.mushow.safetynet.exception.StationNotFoundException;
 import uk.mushow.safetynet.service.FirestationService;
 import uk.mushow.safetynet.service.PersonService;
 
@@ -23,33 +28,63 @@ public class GenericController {
     }
 
     @GetMapping("childAlert")
-    public List<ChildDTO> getChildAlert(@RequestParam("address") String address) {
-        return personService.getChildAlertByAddress(address);
+    public ResponseEntity<List<ChildDTO>> getChildAlert(@RequestParam("address") String address) {
+        try {
+            List<ChildDTO> childAlerts = personService.getChildAlertByAddress(address);
+            return ResponseEntity.ok(childAlerts);
+        } catch (AddressNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @GetMapping("phoneAlert")
-    public PhoneAlertDTO getPhoneAlert(@RequestParam("firestation") int stationNumber) {
-        return firestationService.getPhoneAlertByStationNumber(stationNumber);
+    public ResponseEntity<PhoneAlertDTO> getPhoneAlert(@RequestParam("firestation") int stationNumber) {
+        try {
+            PhoneAlertDTO phoneAlerts = firestationService.getPhoneAlertByStationNumber(stationNumber);
+            return ResponseEntity.ok(phoneAlerts);
+        } catch (StationNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @GetMapping("fire")
-    public List<ResidentDTO> fire(@RequestParam("address") String address) {
-        return personService.getFireAlertByAddress(address);
+    public ResponseEntity<List<ResidentDTO>> fire(@RequestParam("address") String address) {
+        try {
+            List<ResidentDTO> residentList = personService.getFireAlertByAddress(address);
+            return ResponseEntity.ok(residentList);
+        } catch (AddressNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @GetMapping("flood/stations")
-    public List<FloodDTO> getFloodAlertByStations(@RequestParam List<Integer> stations) {
-        return personService.getFloodAlertByStations(stations);
+    public ResponseEntity<List<FloodDTO>> getFloodAlertByStations(@RequestParam List<Integer> stations) {
+        try {
+            List<FloodDTO> floodList = personService.getFloodAlertByStations(stations);
+            return ResponseEntity.ok(floodList);
+        } catch (StationNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @GetMapping("personInfo")
-    public List<PersonInfoDTO> getPersonInfo(@RequestParam("firstName") String firstName, @RequestParam("lastName") String lastName) {
-        return personService.getPersonInfo(firstName, lastName);
+    public ResponseEntity<List<PersonInfoDTO>> getPersonInfo(@RequestParam("firstName") String firstName, @RequestParam("lastName") String lastName) {
+        try {
+            List<PersonInfoDTO> personInfoList = personService.getPersonInfo(firstName, lastName);
+            return ResponseEntity.ok(personInfoList);
+        } catch (PersonNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @GetMapping("communityEmail")
-    public List<String> getCommunityEmail(@RequestParam("city") String city) {
-        return personService.getCommunityEmail(city);
+    public ResponseEntity<List<String>> getCommunityEmail(@RequestParam("city") String city) {
+        try {
+            List<String> emails = personService.getCommunityEmail(city);
+            return ResponseEntity.ok(emails);
+        } catch (CityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
 }

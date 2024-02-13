@@ -19,8 +19,13 @@ public class FirestationController {
     }
 
     @GetMapping
-    public FirestationDTO getCoverage(@RequestParam("stationNumber") int stationNumber) {
-        return firestationService.getFirestationCoverage(stationNumber);
+    public ResponseEntity<FirestationDTO> getCoverage(@RequestParam("stationNumber") int stationNumber) {
+        try {
+            FirestationDTO firestationDTO = firestationService.getFirestationCoverage(stationNumber);
+            return ResponseEntity.ok(firestationDTO);
+        } catch (StationNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PostMapping
