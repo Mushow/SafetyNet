@@ -1,8 +1,11 @@
 package uk.mushow.safetynet.service;
 
 import org.springframework.stereotype.Service;
+import uk.mushow.safetynet.exception.AddressNotFoundException;
+import uk.mushow.safetynet.exception.CityNotFoundException;
 import uk.mushow.safetynet.dto.*;
 import uk.mushow.safetynet.exception.PersonNotFoundException;
+import uk.mushow.safetynet.exception.StationNotFoundException;
 import uk.mushow.safetynet.model.MedicalRecord;
 import uk.mushow.safetynet.model.Person;
 import uk.mushow.safetynet.repository.FirestationRepository;
@@ -51,8 +54,11 @@ public class PersonService implements IPersonService {
         return getAge(medicalRecord) >= 18;
     }
 
-    public List<ChildDTO> getChildAlertByAddress(String address) {
+    public List<ChildDTO> getChildAlertByAddress(String address) throws AddressNotFoundException {
         List<Person> personsAtAddress = personRepository.findPersonByPredicate(person -> person.getAddress().equals(address));
+
+        if (personsAtAddress.isEmpty()) throw new AddressNotFoundException("Address not found: " + address);
+
         List<ChildDTO> childAlerts = new ArrayList<>();
 
         List<Person> children = personsAtAddress.stream()
@@ -74,20 +80,17 @@ public class PersonService implements IPersonService {
     }
 
 
-    public List<ResidentDTO> getFireAlertByAddress(String address) {
-        return personRepository.findPersonByPredicate(person -> person.getAddress().equals(address))
-                .stream()
-                .map(person -> {
-                    MedicalRecord medicalRecord = medicalRecordService.getByName(person.getFirstName(), person.getLastName());
-                    int age = getAge(medicalRecord);
-                    MedicalInfoDTO medicalInfoDTO = new MedicalInfoDTO(medicalRecord.getMedications(), medicalRecord.getAllergies());
 
-                    return new ResidentDTO(person.getLastName(), person.getPhone(), age, medicalInfoDTO);
-                })
-                .collect(Collectors.toList());
+    public List<ResidentDTO> getFireAlertByAddress(String address) throws AddressNotFoundException {
+        List<Person> persons = personRepository.findPersonByPredicate(person -> person.getAddress().equals(address));
+
+        if (persons.isEmpty()) throw new AddressNotFoundException("Address not found: " + address);
+
+        return getResidentDTO(persons);
     }
 
-    public List<FloodDTO> getFloodAlertByStations(List<Integer> stations) {
+
+    public List<FloodDTO> getFloodAlertByStations(List<Integer> stations) throws StationNotFoundException {
         List<FloodDTO> floodAlerts = new ArrayList<>();
 
         for (Integer station : stations) {
@@ -96,15 +99,7 @@ public class PersonService implements IPersonService {
 
             for (String address : stationAddresses) {
                 List<Person> personsAtAddress = personRepository.findPersonByPredicate(person -> person.getAddress().equals(address));
-                List<ResidentDTO> residents = personsAtAddress.stream()
-                        .map(person -> {
-                            MedicalRecord medicalRecord = medicalRecordService.getByName(person.getFirstName(), person.getLastName());
-                            int age = getAge(medicalRecord);
-                            MedicalInfoDTO medicalInfoDTO = new MedicalInfoDTO(medicalRecord.getMedications(), medicalRecord.getAllergies());
-
-                            return new ResidentDTO(person.getLastName(), person.getPhone(), age, medicalInfoDTO);
-                        })
-                        .toList();
+                List<ResidentDTO> residents = getResidentDTO(personsAtAddress);
 
                 householdsByAddress.put(address, residents);
             }
@@ -115,9 +110,12 @@ public class PersonService implements IPersonService {
         return floodAlerts;
     }
 
-    public List<PersonInfoDTO> getPersonInfo(String firstName, String lastName) {
-        return personRepository.findPersonByPredicate(person -> person.getFirstName().equals(firstName) && person.getLastName().equals(lastName))
-                .stream()
+    public List<PersonInfoDTO> getPersonInfo(String firstName, String lastName) throws PersonNotFoundException {
+        List<Person> people = personRepository.findPersonByPredicate(person -> person.getFirstName().equals(firstName) && person.getLastName().equals(lastName));
+        if (people.isEmpty()) {
+            throw new PersonNotFoundException("Person not found: " + firstName + " " + lastName);
+        }
+        return people.stream()
                 .map(person -> {
                     MedicalRecord medicalRecord = medicalRecordService.getByName(person.getFirstName(), person.getLastName());
                     int age = getAge(medicalRecord);
@@ -128,10 +126,25 @@ public class PersonService implements IPersonService {
                 .collect(Collectors.toList());
     }
 
-    public List<String> getCommunityEmail(String city) {
-        return personRepository.findPersonByPredicate(person -> person.getCity().equals(city))
-                .stream()
+    public List<String> getCommunityEmail(String city) throws CityNotFoundException {
+        List<Person> people = personRepository.findPersonByPredicate(person -> person.getCity().equals(city));
+        if (people.isEmpty()) {
+            throw new CityNotFoundException("City not found: " + city);
+        }
+        return people.stream()
                 .map(Person::getEmail)
+                .collect(Collectors.toList());
+    }
+
+    private List<ResidentDTO> getResidentDTO(List<Person> persons) {
+        return persons.stream()
+                .map(person -> {
+                    MedicalRecord medicalRecord = medicalRecordService.getByName(person.getFirstName(), person.getLastName());
+                    int age = getAge(medicalRecord);
+                    MedicalInfoDTO medicalInfoDTO = new MedicalInfoDTO(medicalRecord.getMedications(), medicalRecord.getAllergies());
+
+                    return new ResidentDTO(person.getLastName(), person.getPhone(), age, medicalInfoDTO);
+                })
                 .collect(Collectors.toList());
     }
 
