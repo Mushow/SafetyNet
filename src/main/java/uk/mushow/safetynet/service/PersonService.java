@@ -128,4 +128,11 @@ public class PersonService implements IPersonService {
                 .collect(Collectors.toList());
     }
 
+    public List<String> getCommunityEmail(String city) {
+        return personRepository.findPersonByPredicate(person -> person.getCity().equals(city))
+                .stream()
+                .map(Person::getEmail)
+                .collect(Collectors.toList());
+    }
+
 }
