@@ -47,4 +47,9 @@ public class GenericController {
         return personService.getPersonInfo(firstName, lastName);
     }
 
+    @GetMapping("communityEmail")
+    public List<String> getCommunityEmail(@RequestParam("city") String city) {
+        return personService.getCommunityEmail(city);
+    }
+
 }
