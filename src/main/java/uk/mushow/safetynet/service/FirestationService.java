@@ -38,8 +38,11 @@ public class FirestationService implements IFirestationService {
         firestationRepository.delete(firestation);
     }
 
-    public FirestationDTO getFirestationCoverage(int stationNumber) {
+    public FirestationDTO getFirestationCoverage(int stationNumber) throws StationNotFoundException {
         List<String> addresses = firestationRepository.findAddressesByStationNumber(stationNumber);
+
+        if (addresses.isEmpty()) throw new StationNotFoundException("Station not found: " + stationNumber);
+
         List<PersonCoveredDTO> coveredPersons = new ArrayList<>();
         int numberOfAdults = 0;
 
@@ -56,12 +59,15 @@ public class FirestationService implements IFirestationService {
         return new FirestationDTO(coveredPersons, numberOfAdults, numberOfChildren);
     }
 
-    public PhoneAlertDTO getPhoneAlertByStationNumber(int stationNumber) {
-        return new PhoneAlertDTO(
-                firestationRepository.findAddressesByStationNumber(stationNumber).stream()
-                        .flatMap(address -> firestationRepository.findPhoneNumbersByAddress(address).stream())
-                        .collect(Collectors.toList())
-        );
+    public PhoneAlertDTO getPhoneAlertByStationNumber(int stationNumber) throws StationNotFoundException {
+        List<String> phoneNumbers = firestationRepository.findAddressesByStationNumber(stationNumber)
+                .stream()
+                .flatMap(address -> firestationRepository.findPhoneNumbersByAddress(address).stream())
+                .collect(Collectors.toList());
+
+        if (phoneNumbers.isEmpty()) throw new StationNotFoundException("Station not found: " + stationNumber);
+
+        return new PhoneAlertDTO(phoneNumbers);
     }
 
 }
