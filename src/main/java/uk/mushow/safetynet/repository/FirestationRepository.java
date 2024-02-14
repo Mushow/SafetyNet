@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import uk.mushow.safetynet.data.DataWrapper;
 import uk.mushow.safetynet.dto.PersonCoveredDTO;
-import uk.mushow.safetynet.exception.StationNotFoundException;
+import uk.mushow.safetynet.exception.NotFoundException;
 import uk.mushow.safetynet.model.Firestation;
 import uk.mushow.safetynet.model.Person;
 
@@ -25,7 +25,7 @@ public class FirestationRepository {
         dataWrapper.getFirestations().add(firestation);
     }
 
-    public void update(Firestation firestation) throws StationNotFoundException {
+    public void update(Firestation firestation) throws NotFoundException {
         boolean wasUpdated = false;
         for (Firestation currentFirestation : dataWrapper.getFirestations()) {
             if (currentFirestation.getAddress().equals(firestation.getAddress())) {
@@ -35,18 +35,18 @@ public class FirestationRepository {
         }
 
         if (!wasUpdated) {
-            throw new StationNotFoundException("The station at " + firestation.getAddress() +
+            throw new NotFoundException("The station at " + firestation.getAddress() +
                     " was not found!");
         }
     }
 
-    public void delete(Firestation firestation) throws StationNotFoundException {
+    public void delete(Firestation firestation) throws NotFoundException {
         boolean wasRemoved = dataWrapper.getFirestations().
                 removeIf(f -> f.getAddress().equals(firestation.getAddress()) &&
                          f.getStation() == firestation.getStation());
 
         if (!wasRemoved) {
-            throw new StationNotFoundException("The station at " + firestation.getAddress() +
+            throw new NotFoundException("The station at " + firestation.getAddress() +
                     " numbered " + firestation.getStation() + " was not found!");
         }
     }

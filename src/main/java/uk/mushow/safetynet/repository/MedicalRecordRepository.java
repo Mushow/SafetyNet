@@ -3,7 +3,7 @@ package uk.mushow.safetynet.repository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import uk.mushow.safetynet.data.DataWrapper;
-import uk.mushow.safetynet.exception.MedicalRecordNotFoundException;
+import uk.mushow.safetynet.exception.NotFoundException;
 import uk.mushow.safetynet.model.MedicalRecord;
 
 import java.util.Optional;
@@ -22,7 +22,7 @@ public class MedicalRecordRepository {
         dataWrapper.getMedicalRecords().add(medicalRecord);
     }
 
-    public void update(MedicalRecord updatedMedicalRecord) throws MedicalRecordNotFoundException {
+    public void update(MedicalRecord updatedMedicalRecord) throws NotFoundException {
         String id = updatedMedicalRecord.getFirstName() + updatedMedicalRecord.getLastName();
         boolean found = false;
 
@@ -34,18 +34,18 @@ public class MedicalRecordRepository {
             }
         }
         if (!found) {
-            throw new MedicalRecordNotFoundException("The medical record for: " + updatedMedicalRecord.getFirstName() + " " + updatedMedicalRecord.getLastName() + " was not found!");
+            throw new NotFoundException("The medical record for: " + updatedMedicalRecord.getFirstName() + " " + updatedMedicalRecord.getLastName() + " was not found!");
         }
     }
 
-    public void delete(MedicalRecord medicalRecordToDelete) throws MedicalRecordNotFoundException {
+    public void delete(MedicalRecord medicalRecordToDelete) throws NotFoundException {
         String firstName = medicalRecordToDelete.getFirstName();
         String lastName = medicalRecordToDelete.getLastName();
         boolean wasRemoved = dataWrapper.getMedicalRecords().removeIf(medicalRecord ->
                 medicalRecord.getFirstName().equals(firstName) && medicalRecord.getLastName().equals(lastName));
 
         if (!wasRemoved) {
-            throw new MedicalRecordNotFoundException("The medical record for: " + firstName + " " + lastName + " was not found!");
+            throw new NotFoundException("The medical record for: " + firstName + " " + lastName + " was not found!");
         }
     }
 

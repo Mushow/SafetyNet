@@ -6,10 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import uk.mushow.safetynet.dto.*;
-import uk.mushow.safetynet.exception.AddressNotFoundException;
-import uk.mushow.safetynet.exception.CityNotFoundException;
-import uk.mushow.safetynet.exception.PersonNotFoundException;
-import uk.mushow.safetynet.exception.StationNotFoundException;
+import uk.mushow.safetynet.exception.NotFoundException;
 import uk.mushow.safetynet.service.FirestationService;
 import uk.mushow.safetynet.service.PersonService;
 
@@ -32,7 +29,7 @@ public class GenericController {
         try {
             List<ChildDTO> childAlerts = personService.getChildAlertByAddress(address);
             return ResponseEntity.ok(childAlerts);
-        } catch (AddressNotFoundException e) {
+        } catch (NotFoundException e) {
             return ResponseEntity.notFound().build();
         }
     }
@@ -42,7 +39,7 @@ public class GenericController {
         try {
             PhoneAlertDTO phoneAlerts = firestationService.getPhoneAlertByStationNumber(stationNumber);
             return ResponseEntity.ok(phoneAlerts);
-        } catch (StationNotFoundException e) {
+        } catch (NotFoundException e) {
             return ResponseEntity.notFound().build();
         }
     }
@@ -52,7 +49,7 @@ public class GenericController {
         try {
             List<ResidentDTO> residentList = personService.getFireAlertByAddress(address);
             return ResponseEntity.ok(residentList);
-        } catch (AddressNotFoundException e) {
+        } catch (NotFoundException e) {
             return ResponseEntity.notFound().build();
         }
     }
@@ -62,7 +59,7 @@ public class GenericController {
         try {
             List<FloodDTO> floodList = personService.getFloodAlertByStations(stations);
             return ResponseEntity.ok(floodList);
-        } catch (StationNotFoundException e) {
+        } catch (NotFoundException e) {
             return ResponseEntity.notFound().build();
         }
     }
@@ -72,7 +69,7 @@ public class GenericController {
         try {
             List<PersonInfoDTO> personInfoList = personService.getPersonInfo(firstName, lastName);
             return ResponseEntity.ok(personInfoList);
-        } catch (PersonNotFoundException e) {
+        } catch (NotFoundException e) {
             return ResponseEntity.notFound().build();
         }
     }
@@ -82,7 +79,7 @@ public class GenericController {
         try {
             List<String> emails = personService.getCommunityEmail(city);
             return ResponseEntity.ok(emails);
-        } catch (CityNotFoundException e) {
+        } catch (NotFoundException e) {
             return ResponseEntity.notFound().build();
         }
     }

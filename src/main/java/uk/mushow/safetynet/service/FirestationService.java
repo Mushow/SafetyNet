@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 import uk.mushow.safetynet.dto.FirestationDTO;
 import uk.mushow.safetynet.dto.PersonCoveredDTO;
 import uk.mushow.safetynet.dto.PhoneAlertDTO;
-import uk.mushow.safetynet.exception.StationNotFoundException;
+import uk.mushow.safetynet.exception.NotFoundException;
 import uk.mushow.safetynet.model.Firestation;
 import uk.mushow.safetynet.repository.FirestationRepository;
 
@@ -29,19 +29,19 @@ public class FirestationService implements IFirestationService {
     }
 
     @Override
-    public void updateFirestation(Firestation firestation) throws StationNotFoundException {
+    public void updateFirestation(Firestation firestation) throws NotFoundException {
         firestationRepository.update(firestation);
     }
 
     @Override
-    public void deleteFirestation(Firestation firestation) throws StationNotFoundException {
+    public void deleteFirestation(Firestation firestation) throws NotFoundException {
         firestationRepository.delete(firestation);
     }
 
-    public FirestationDTO getFirestationCoverage(int stationNumber) throws StationNotFoundException {
+    public FirestationDTO getFirestationCoverage(int stationNumber) throws NotFoundException {
         List<String> addresses = firestationRepository.findAddressesByStationNumber(stationNumber);
 
-        if (addresses.isEmpty()) throw new StationNotFoundException("Station not found: " + stationNumber);
+        if (addresses.isEmpty()) throw new NotFoundException("Station not found: " + stationNumber);
 
         List<PersonCoveredDTO> coveredPersons = new ArrayList<>();
         int numberOfAdults = 0;
@@ -59,13 +59,13 @@ public class FirestationService implements IFirestationService {
         return new FirestationDTO(coveredPersons, numberOfAdults, numberOfChildren);
     }
 
-    public PhoneAlertDTO getPhoneAlertByStationNumber(int stationNumber) throws StationNotFoundException {
+    public PhoneAlertDTO getPhoneAlertByStationNumber(int stationNumber) throws NotFoundException {
         List<String> phoneNumbers = firestationRepository.findAddressesByStationNumber(stationNumber)
                 .stream()
                 .flatMap(address -> firestationRepository.findPhoneNumbersByAddress(address).stream())
                 .collect(Collectors.toList());
 
-        if (phoneNumbers.isEmpty()) throw new StationNotFoundException("Station not found: " + stationNumber);
+        if (phoneNumbers.isEmpty()) throw new NotFoundException("Station not found: " + stationNumber);
 
         return new PhoneAlertDTO(phoneNumbers);
     }

@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
-import uk.mushow.safetynet.exception.PersonNotFoundException;
+import uk.mushow.safetynet.exception.NotFoundException;
 import uk.mushow.safetynet.model.Person;
 import uk.mushow.safetynet.service.PersonService;
 
@@ -34,7 +34,7 @@ public class PersonController {
         try {
             personService.updatePerson(person);
             return ResponseEntity.ok(person);
-        } catch (PersonNotFoundException e) {
+        } catch (NotFoundException e) {
             return ResponseEntity.notFound().build();
         }
     }
@@ -44,7 +44,7 @@ public class PersonController {
         try {
             personService.deletePerson(person);
             return ResponseEntity.noContent().build();
-        } catch (PersonNotFoundException e) {
+        } catch (NotFoundException e) {
             return ResponseEntity.notFound().build();
         }
     }

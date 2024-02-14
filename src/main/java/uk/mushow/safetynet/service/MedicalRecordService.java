@@ -1,7 +1,7 @@
 package uk.mushow.safetynet.service;
 
 import org.springframework.stereotype.Service;
-import uk.mushow.safetynet.exception.MedicalRecordNotFoundException;
+import uk.mushow.safetynet.exception.NotFoundException;
 import uk.mushow.safetynet.model.MedicalRecord;
 import uk.mushow.safetynet.repository.MedicalRecordRepository;
 
@@ -24,12 +24,12 @@ public class MedicalRecordService implements IMedicalRecordService {
     }
 
     @Override
-    public void updateMedicalRecord(MedicalRecord medicalRecord) throws MedicalRecordNotFoundException {
+    public void updateMedicalRecord(MedicalRecord medicalRecord) throws NotFoundException {
         medicalRecordRepository.update(medicalRecord);
     }
 
     @Override
-    public void deleteMedicalRecord(MedicalRecord medicalRecord) throws MedicalRecordNotFoundException {
+    public void deleteMedicalRecord(MedicalRecord medicalRecord) throws NotFoundException {
         medicalRecordRepository.delete(medicalRecord);
     }
 

@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
-import uk.mushow.safetynet.exception.MedicalRecordNotFoundException;
+import uk.mushow.safetynet.exception.NotFoundException;
 import uk.mushow.safetynet.model.MedicalRecord;
 import uk.mushow.safetynet.service.MedicalRecordService;
 
@@ -34,7 +34,7 @@ public class MedicalRecordController {
         try {
             medicalRecordService.updateMedicalRecord(medicalRecord);
             return ResponseEntity.ok(medicalRecord);
-        } catch (MedicalRecordNotFoundException e) {
+        } catch (NotFoundException e) {
             return ResponseEntity.notFound().build();
         }
     }
@@ -44,7 +44,7 @@ public class MedicalRecordController {
         try {
             medicalRecordService.deleteMedicalRecord(medicalRecord);
             return ResponseEntity.noContent().build();
-        } catch (MedicalRecordNotFoundException e) {
+        } catch (NotFoundException e) {
             return ResponseEntity.notFound().build();
         }
     }

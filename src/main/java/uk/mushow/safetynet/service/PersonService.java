@@ -1,11 +1,8 @@
 package uk.mushow.safetynet.service;
 
 import org.springframework.stereotype.Service;
-import uk.mushow.safetynet.exception.AddressNotFoundException;
-import uk.mushow.safetynet.exception.CityNotFoundException;
+import uk.mushow.safetynet.exception.NotFoundException;
 import uk.mushow.safetynet.dto.*;
-import uk.mushow.safetynet.exception.PersonNotFoundException;
-import uk.mushow.safetynet.exception.StationNotFoundException;
 import uk.mushow.safetynet.model.MedicalRecord;
 import uk.mushow.safetynet.model.Person;
 import uk.mushow.safetynet.repository.FirestationRepository;
@@ -36,12 +33,12 @@ public class PersonService implements IPersonService {
     }
 
     @Override
-    public void updatePerson(Person person) throws PersonNotFoundException {
+    public void updatePerson(Person person) throws NotFoundException {
         personRepository.update(person);
     }
 
     @Override
-    public void deletePerson(Person person) throws PersonNotFoundException {
+    public void deletePerson(Person person) throws NotFoundException {
         personRepository.delete(person);
     }
 
@@ -54,10 +51,10 @@ public class PersonService implements IPersonService {
         return getAge(medicalRecord) >= 18;
     }
 
-    public List<ChildDTO> getChildAlertByAddress(String address) throws AddressNotFoundException {
+    public List<ChildDTO> getChildAlertByAddress(String address) throws NotFoundException {
         List<Person> personsAtAddress = personRepository.findPersonByPredicate(person -> person.getAddress().equals(address));
 
-        if (personsAtAddress.isEmpty()) throw new AddressNotFoundException("Address not found: " + address);
+        if (personsAtAddress.isEmpty()) throw new NotFoundException("Address not found: " + address);
 
         List<ChildDTO> childAlerts = new ArrayList<>();
 
@@ -79,18 +76,16 @@ public class PersonService implements IPersonService {
         return childAlerts;
     }
 
-
-
-    public List<ResidentDTO> getFireAlertByAddress(String address) throws AddressNotFoundException {
+    public List<ResidentDTO> getFireAlertByAddress(String address) throws NotFoundException {
         List<Person> persons = personRepository.findPersonByPredicate(person -> person.getAddress().equals(address));
 
-        if (persons.isEmpty()) throw new AddressNotFoundException("Address not found: " + address);
+        if (persons.isEmpty()) throw new NotFoundException("Address not found: " + address);
 
         return getResidentDTO(persons);
     }
 
 
-    public List<FloodDTO> getFloodAlertByStations(List<Integer> stations) throws StationNotFoundException {
+    public List<FloodDTO> getFloodAlertByStations(List<Integer> stations) throws NotFoundException {
         List<FloodDTO> floodAlerts = new ArrayList<>();
 
         for (Integer station : stations) {
@@ -110,10 +105,10 @@ public class PersonService implements IPersonService {
         return floodAlerts;
     }
 
-    public List<PersonInfoDTO> getPersonInfo(String firstName, String lastName) throws PersonNotFoundException {
+    public List<PersonInfoDTO> getPersonInfo(String firstName, String lastName) throws NotFoundException {
         List<Person> people = personRepository.findPersonByPredicate(person -> person.getFirstName().equals(firstName) && person.getLastName().equals(lastName));
         if (people.isEmpty()) {
-            throw new PersonNotFoundException("Person not found: " + firstName + " " + lastName);
+            throw new NotFoundException("Person not found: " + firstName + " " + lastName);
         }
         return people.stream()
                 .map(person -> {
@@ -126,10 +121,10 @@ public class PersonService implements IPersonService {
                 .collect(Collectors.toList());
     }
 
-    public List<String> getCommunityEmail(String city) throws CityNotFoundException {
+    public List<String> getCommunityEmail(String city) throws NotFoundException {
         List<Person> people = personRepository.findPersonByPredicate(person -> person.getCity().equals(city));
         if (people.isEmpty()) {
-            throw new CityNotFoundException("City not found: " + city);
+            throw new NotFoundException("City not found: " + city);
         }
         return people.stream()
                 .map(Person::getEmail)

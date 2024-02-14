@@ -3,7 +3,7 @@ package uk.mushow.safetynet.repository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import uk.mushow.safetynet.data.DataWrapper;
-import uk.mushow.safetynet.exception.PersonNotFoundException;
+import uk.mushow.safetynet.exception.NotFoundException;
 import uk.mushow.safetynet.model.Person;
 
 import java.util.List;
@@ -20,7 +20,7 @@ public class PersonRepository {
         dataWrapper.getPersons().add(person);
     }
 
-    public void update(Person updatedPerson) throws PersonNotFoundException {
+    public void update(Person updatedPerson) throws NotFoundException {
         String id = updatedPerson.getFirstName() + updatedPerson.getLastName();
         boolean found = false;
 
@@ -33,16 +33,16 @@ public class PersonRepository {
             }
         }
 
-        if(!found) throw new PersonNotFoundException("The person: " + updatedPerson.getFirstName() + " " + updatedPerson.getLastName() + "was not found!");
+        if(!found) throw new NotFoundException("The person: " + updatedPerson.getFirstName() + " " + updatedPerson.getLastName() + "was not found!");
     }
 
-    public void delete(Person personToDelete) throws PersonNotFoundException {
+    public void delete(Person personToDelete) throws NotFoundException {
         String firstName = personToDelete.getFirstName();
         String lastName = personToDelete.getLastName();
         boolean wasRemoved = dataWrapper.getPersons().removeIf(person ->
                 person.getFirstName().equals(firstName) && person.getLastName().equals(lastName));
 
-        if (!wasRemoved) throw new PersonNotFoundException("The person: " + firstName + " " + lastName + "was not found!");
+        if (!wasRemoved) throw new NotFoundException("The person: " + firstName + " " + lastName + "was not found!");
     }
 
     private void updatePersonInformation(Person current, Person update) {
