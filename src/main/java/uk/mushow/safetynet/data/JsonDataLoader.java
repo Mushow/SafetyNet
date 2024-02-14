@@ -3,8 +3,7 @@ package uk.mushow.safetynet.data;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -13,10 +12,9 @@ import java.io.IOException;
 import java.net.URL;
 
 @Getter
+@Log4j2
 @Component
 public class JsonDataLoader {
-
-    private static final Logger log = LogManager.getLogger(JsonDataLoader.class);
 
     private final ObjectMapper mapper;
     private final DataWrapper dataWrapper;
@@ -39,7 +37,7 @@ public class JsonDataLoader {
             }
             // Populate the autowired DataWrapper instance
             mapper.readerForUpdating(dataWrapper).readValue(resourceUrl);
-            log.debug("Data successfully retrieved from JSON file and populated to DataWrapper.");
+            log.info("Data successfully retrieved from JSON file and populated to DataWrapper.");
         } catch (IOException e) {
             log.error("Could not read JSON file: {}. Error: {}", jsonFile, e.getMessage());
             throw new RuntimeException("Could not initialize data structure from JSON file: " + jsonFile, e);
