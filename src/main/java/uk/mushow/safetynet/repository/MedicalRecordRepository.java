@@ -30,6 +30,7 @@ public class MedicalRecordRepository {
             String currentId = currentMedicalRecord.getFirstName() + currentMedicalRecord.getLastName();
             if (currentId.equals(id)) {
                 updateMedicalRecordInformation(currentMedicalRecord, updatedMedicalRecord);
+                found = true;
                 break;
             }
         }
