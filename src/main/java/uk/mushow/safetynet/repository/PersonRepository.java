@@ -16,6 +16,10 @@ public class PersonRepository {
     @Autowired
     private DataWrapper dataWrapper;
 
+    public PersonRepository(DataWrapper dataWrapper) {
+        this.dataWrapper = dataWrapper;
+    }
+
     public void create(Person person) {
         dataWrapper.getPersons().add(person);
     }
