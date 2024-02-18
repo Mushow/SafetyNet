@@ -17,7 +17,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class) // ADD TEST ORDER BECAUSE UPDATE DOESNT PASS (DELETE IS EXECUTED BEFORE)
-public class MedicalRecordControllerIT {
+public class MedicalRecordControllerTest {
 
     @Autowired
     private MockMvc mockMvc;

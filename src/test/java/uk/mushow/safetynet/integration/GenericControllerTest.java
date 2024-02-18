@@ -1,4 +1,4 @@
 package uk.mushow.safetynet.integration;
 
-public class GenericControllerIT {
+public class GenericControllerTest {
 }
