@@ -19,7 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class PersonControllerTest {
+public class PersonControllerIT {
 
     @Autowired
     private MockMvc mockMvc;
@@ -102,6 +102,18 @@ public class PersonControllerTest {
     }
 
     @Test
+    public void deletePerson_WhenPersonNotFound_ShouldReturnNotFoundStatus() throws Exception {
+        doThrow(new NotFoundException("Person not found"))
+                .when(personService).deletePerson(any(Person.class));
+
+        String personJson = "{\"firstName\":\"John\", \"lastName\":\"Doe\", \"address\":\"123 Main St\", \"city\":\"Springfield\", \"zip\":\"123456\", \"phone\":\"123-456-7890\", \"email\":\"john.doe@example.com\"}";
+        mockMvc.perform(delete("/person")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(personJson))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     public void whenPostRequestToPersonAndDataIsInvalid_thenRespondWithValidationErrors() throws Exception {
         String personJson = "{\"name\":\"\", \"firstName\":\"\"}";
 
@@ -112,7 +124,6 @@ public class PersonControllerTest {
                 .andExpect(jsonPath("$.firstName").value("First name is mandatory"))
                 .andExpect(jsonPath("$.lastName").value("Last name is mandatory"));
     }
-
 
 }
 

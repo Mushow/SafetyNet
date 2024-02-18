@@ -17,7 +17,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class) // ADD TEST ORDER BECAUSE UPDATE DOESNT PASS (DELETE IS EXECUTED BEFORE)
-public class MedicalRecordControllerTest {
+public class MedicalRecordControllerIT {
 
     @Autowired
     private MockMvc mockMvc;
@@ -78,6 +78,42 @@ public class MedicalRecordControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(validMedicalRecordJsonToDelete))
                 .andExpect(status().isNoContent());
+    }
+
+    @Test
+    public void deleteMedicalRecord_NotFound_ShouldReturnNotFound() throws Exception {
+        String validMedicalRecordJsonToDelete = """
+                {
+                    "firstName" : "NonExistingFirstName",
+                    "lastName" : "NonExistingLastName",
+                    "birthdate" : "08/30/1979",
+                    "medications" : [ "thradox:700mg" ],
+                    "allergies" : [ "illisoxian" ]
+                }
+                """;
+
+        mockMvc.perform(delete("/medicalRecord")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(validMedicalRecordJsonToDelete))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void updateMedicalRecord_NotFound_ShouldReturnNotFound() throws Exception {
+        String validMedicalRecordJson = """
+                {
+                    "firstName" : "NonExistingFirstName",
+                    "lastName" : "NonExistingLastName",
+                    "birthdate" : "08/30/1979",
+                    "medications" : [ "paracetamol:500mg" ],
+                    "allergies" : [ "illisoxian" ]
+                }
+                """;
+
+        mockMvc.perform(put("/medicalRecord")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(validMedicalRecordJson))
+                .andExpect(status().isNotFound());
     }
 
     @Test
