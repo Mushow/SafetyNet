@@ -102,6 +102,8 @@ public class PersonService implements IPersonService {
             floodAlerts.add(new FloodDTO(householdsByAddress));
         }
 
+        if(floodAlerts.isEmpty()) throw new NotFoundException("Stations not found: " + stations);
+
         return floodAlerts;
     }
 
