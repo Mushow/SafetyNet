@@ -140,4 +140,16 @@ public class FirestationControllerTest {
         assertEquals(mockResponse, actualFirestationDTO, "The returned FirestationDTO does not match the expected");
     }
 
+    @Test
+    public void getFirestationCoverage_NotFound_ShouldReturnNotFound() throws Exception {
+        int stationNumber = 2;
+
+        doThrow(new NotFoundException("Firestation not found")).when(firestationService).getFirestationCoverage(eq(stationNumber));
+
+        mockMvc.perform(get("/firestation")
+                        .param("stationNumber", "2")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+    }
+
 }
