@@ -27,25 +27,19 @@ public class MedicalRecordController {
 
     @PostMapping
     public ResponseEntity<MedicalRecord> addMedicalRecord(@Valid @RequestBody MedicalRecord medicalRecord) {
-        log.debug("Attempting to add medical record: {}", medicalRecord);
         medicalRecordService.addMedicalRecord(medicalRecord);
-        log.info("Medical record added successfully: {}", medicalRecord);
         return ResponseEntity.status(HttpStatus.CREATED).body(medicalRecord);
     }
 
     @PutMapping
     public ResponseEntity<MedicalRecord> updateMedicalRecord(@Valid @RequestBody MedicalRecord medicalRecord) throws NotFoundException {
-        log.debug("Attempting to update medical record: {}", medicalRecord);
          medicalRecordService.updateMedicalRecord(medicalRecord);
-        log.info("Medical record updated successfully: {}", medicalRecord);
         return ResponseEntity.ok(medicalRecord);
     }
 
     @DeleteMapping
     public ResponseEntity<Void> deleteMedicalRecord(@Valid @RequestBody MedicalRecord medicalRecord) throws NotFoundException {
-        log.debug("Attempting to delete medical record: {}", medicalRecord);
         medicalRecordService.deleteMedicalRecord(medicalRecord);
-        log.info("Medical record deleted successfully.");
         return ResponseEntity.noContent().build();
     }
 
