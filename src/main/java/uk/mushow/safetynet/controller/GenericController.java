@@ -26,49 +26,37 @@ public class GenericController {
 
     @GetMapping("childAlert")
     public ResponseEntity<List<ChildDTO>> getChildAlert(@RequestParam("address") String address) throws NotFoundException {
-        log.info("GET - Trying to retrieve child alert for address: " + address);
         List<ChildDTO> childAlerts = personService.getChildAlertByAddress(address);
-        log.info("Object successfully retrieved. Returning status 200. (Ok)");
         return ResponseEntity.ok(childAlerts);
     }
 
     @GetMapping("phoneAlert")
     public ResponseEntity<PhoneAlertDTO> getPhoneAlert(@RequestParam("firestation") int stationNumber) throws NotFoundException {
-        log.info("GET - Trying to retrieve phone alert for station number: " + stationNumber);
         PhoneAlertDTO phoneAlerts = firestationService.getPhoneAlertByStationNumber(stationNumber);
-        log.info("Object successfully retrieved. Returning status 200. (Ok)");
         return ResponseEntity.ok(phoneAlerts);
     }
 
     @GetMapping("fire")
     public ResponseEntity<List<ResidentDTO>> fire(@RequestParam("address") String address) throws NotFoundException {
-        log.info("GET - Trying to retrieve fire alert for address: " + address);
         List<ResidentDTO> residentList = personService.getFireAlertByAddress(address);
-        log.info("Object successfully retrieved. Returning status 200. (Ok)");
         return ResponseEntity.ok(residentList);
     }
 
     @GetMapping("flood/stations")
     public ResponseEntity<List<FloodDTO>> getFloodAlertByStations(@RequestParam List<Integer> stations) throws NotFoundException {
-        log.info("GET - Trying to retrieve flood alert for stations: " + stations);
         List<FloodDTO> floodList = personService.getFloodAlertByStations(stations);
-        log.info("Object successfully retrieved. Returning status 200. (Ok)");
         return ResponseEntity.ok(floodList);
     }
 
     @GetMapping("personInfo")
     public ResponseEntity<List<PersonInfoDTO>> getPersonInfo(@RequestParam("firstName") String firstName, @RequestParam("lastName") String lastName) throws NotFoundException {
-        log.info("GET - Trying to retrieve person info for: " + firstName + " " + lastName);
         List<PersonInfoDTO> personInfoList = personService.getPersonInfo(firstName, lastName);
-        log.info("Object successfully retrieved. Returning status 200. (Ok)");
         return ResponseEntity.ok(personInfoList);
     }
 
     @GetMapping("communityEmail")
     public ResponseEntity<List<String>> getCommunityEmail(@RequestParam("city") String city) throws NotFoundException {
-        log.info("GET - Trying to retrieve community email for city: " + city);
         List<String> emails = personService.getCommunityEmail(city);
-        log.info("Object successfully retrieved. Returning status 200. (Ok)");
         return ResponseEntity.ok(emails);
     }
 

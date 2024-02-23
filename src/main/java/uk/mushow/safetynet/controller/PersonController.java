@@ -4,7 +4,6 @@ import jakarta.validation.Valid;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import uk.mushow.safetynet.exception.NotFoundException;
@@ -27,15 +26,12 @@ public class PersonController {
 
     @PostMapping
     public ResponseEntity<Person> addPerson(@Valid @RequestBody Person person) {
-        log.info("Trying to add person: {}", person);
         personService.addPerson(person);
-        log.info("Person added successfully");
         return ResponseEntity.status(HttpStatus.CREATED).body(person);
     }
 
     @PutMapping
     public ResponseEntity<Person> updatePerson(@Valid @RequestBody Person person) throws NotFoundException {
-        log.info("Trying to update person: {}", person);
         personService.updatePerson(person);
         return ResponseEntity.ok(person);
     }
@@ -43,9 +39,7 @@ public class PersonController {
     @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deletePerson(@Valid @RequestBody Person person) throws NotFoundException {
-        log.info("Trying to delete person: {}", person);
         personService.deletePerson(person);
-        log.info("Person deleted successfully");
     }
 
 

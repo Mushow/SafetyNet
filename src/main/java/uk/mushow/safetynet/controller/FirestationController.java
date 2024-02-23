@@ -22,34 +22,26 @@ public class FirestationController {
 
     @GetMapping
     public ResponseEntity<FirestationDTO> getCoverage(@RequestParam("stationNumber") int stationNumber) throws NotFoundException {
-        log.info("Trying to get firestation coverage for station number: {}", stationNumber);
         FirestationDTO firestationDTO = firestationService.getFirestationCoverage(stationNumber);
-        log.info("Firestation coverage retrieved successfully for station number: {}", stationNumber);
         return ResponseEntity.ok(firestationDTO);
     }
 
     @PostMapping
     public ResponseEntity<Firestation> addFirestation(@RequestBody Firestation firestation) {
-        log.info("Trying to add firestation: {}", firestation);
         firestationService.addFirestation(firestation);
-        log.info("Firestation added successfully: {}", firestation);
         return ResponseEntity.status(HttpStatus.CREATED).body(firestation);
     }
 
     @PutMapping
     public ResponseEntity<Firestation> updateFirestation(@RequestBody Firestation firestation) throws NotFoundException {
-        log.info("Trying to update firestation: {}", firestation);
         firestationService.updateFirestation(firestation);
-        log.info("Firestation updated successfully: {}", firestation);
         return ResponseEntity.ok(firestation);
     }
 
     @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteFirestation(@RequestBody Firestation firestation) throws NotFoundException {
-        log.info("Trying to delete firestation: {}", firestation);
         firestationService.deleteFirestation(firestation);
-        log.info("Firestation deleted successfully.");
     }
 
     @ExceptionHandler(NotFoundException.class)
